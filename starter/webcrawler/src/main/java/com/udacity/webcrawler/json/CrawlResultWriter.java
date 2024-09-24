@@ -1,7 +1,15 @@
 package com.udacity.webcrawler.json;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 /**
@@ -29,6 +37,11 @@ public final class CrawlResultWriter {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(path);
     // TODO: Fill in this method.
+    try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {
+      write(bufferedWriter);
+    } catch (java.lang.Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -40,5 +53,18 @@ public final class CrawlResultWriter {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(writer);
     // TODO: Fill in this method.
+    /*
+    Hint from the course: Hint: If a test fails due to a Stream being closed twice,
+    try calling ObjectMapper#disable(Feature) with the com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET feature.
+    This will prevent Jackson from closing the Writer in CrawlResultWriter#write(Writer),
+    since you should have already closed it in CrawlResultWriter#write(Path).
+     */
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+    try {
+      objectMapper.writeValue(writer, result);
+    } catch (java.lang.Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }
