@@ -53,7 +53,7 @@ public final class ConfigurationLoader {
     A hint from the course: Hint: If you get a "Stream closed" failure in the test,
     try calling ObjectMapper#disable(Feature) to disable the com.fasterxml.jackson.core.JsonParser.Feature.AUTO_CLOSE_SOURCE.
     This prevents the Jackson library from closing the input Reader,
-    which you should have already closed in ConfigurationLoader#load().
+    which you should have already closed in ConfigurationLoader#load()
      */
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
