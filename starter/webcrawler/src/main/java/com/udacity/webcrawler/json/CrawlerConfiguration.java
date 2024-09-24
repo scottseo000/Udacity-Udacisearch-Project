@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 /**
  * A data class that represents the configuration of a single web crawl.
  */
+
+//Indicating to Jackson that CrawlerConfiguration uses builder pattern
 @JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
 public final class CrawlerConfiguration {
 
@@ -186,11 +188,14 @@ public final class CrawlerConfiguration {
     private String profileOutputPath = "";
     private String resultPath = "";
 
+    //Adding @JsonProperty annotations to assign JSON properties
+
     /**
      * Adds a start page URL.
      *
      * <p>Does nothing if the given page has already been added. See {@link #getStartPages()}.
      */
+    @JsonProperty("startPages")
     public Builder addStartPages(String... startPages) {
       for (String startPage : startPages) {
         this.startPages.add(Objects.requireNonNull(startPage));
@@ -205,6 +210,7 @@ public final class CrawlerConfiguration {
      *
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
+    @JsonProperty("ignoredUrls")
     public Builder addIgnoredUrls(String... patterns) {
       for (String pattern : patterns) {
         ignoredUrls.add(Objects.requireNonNull(pattern));
@@ -223,6 +229,7 @@ public final class CrawlerConfiguration {
      *
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
+    @JsonProperty("ignoredWords")
     public Builder addIgnoredWords(String... patterns) {
       for (String pattern : patterns) {
         ignoredWords.add(Objects.requireNonNull(pattern));
@@ -235,6 +242,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getParallelism()}.
      */
+    @JsonProperty("parallelism")
     public Builder setParallelism(int parallelism) {
       this.parallelism = parallelism;
       return this;
@@ -246,6 +254,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getImplementationOverride()}.
      */
+    @JsonProperty("implementationOverride")
     public Builder setImplementationOverride(String implementationOverride) {
       this.implementationOverride = Objects.requireNonNull(implementationOverride);
       return this;
@@ -256,6 +265,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getMaxDepth()}.
      */
+    @JsonProperty("maxDepth")
     public Builder setMaxDepth(int maxDepth) {
       this.maxDepth = maxDepth;
       return this;
@@ -266,6 +276,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getTimeout()}.
      */
+    @JsonProperty("timeoutSeconds")
     public Builder setTimeoutSeconds(int seconds) {
       this.timeoutSeconds = seconds;
       return this;
@@ -276,6 +287,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getPopularWordCount()}.
      */
+    @JsonProperty("popularWordCount")
     public Builder setPopularWordCount(int popularWordCount) {
       this.popularWordCount = popularWordCount;
       return this;
@@ -286,6 +298,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getProfileOutputPath()}.
      */
+    @JsonProperty("profileOutputPath")
     public Builder setProfileOutputPath(String profileOutputPath) {
       this.profileOutputPath = Objects.requireNonNull(profileOutputPath);
       return this;
@@ -296,6 +309,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getResultPath()}.
      */
+    @JsonProperty("resultPath")
     public Builder setResultPath(String resultPath) {
       this.resultPath = Objects.requireNonNull(resultPath);
       return this;
