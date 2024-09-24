@@ -1,8 +1,10 @@
 package com.udacity.webcrawler.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
 
 import java.io.Reader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -28,7 +30,13 @@ public final class ConfigurationLoader {
   public CrawlerConfiguration load() {
     // TODO: Fill in this method.
 
-    return new CrawlerConfiguration.Builder().build();
+    //Read JSON string from variable 'path' by passing it into a reader and returning a CrawlerConfiguration
+    //Reader will automatically close after use, which is required for the conditions in read()
+    try (Reader reader = Files.newBufferedReader(path)) {
+      return read(reader);
+    } catch (java.lang.Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -41,15 +49,19 @@ public final class ConfigurationLoader {
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(reader);
     // TODO: Fill in this method
-
+    /*
+    A hint from the course: Hint: If you get a "Stream closed" failure in the test,
+    try calling ObjectMapper#disable(Feature) to disable the com.fasterxml.jackson.core.JsonParser.Feature.AUTO_CLOSE_SOURCE.
+    This prevents the Jackson library from closing the input Reader,
+    which you should have already closed in ConfigurationLoader#load().
+     */
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      CrawlerConfiguration crawlerConfiguration = objectMapper.readValue(reader, CrawlerConfiguration.Builder.class)
+      CrawlerConfiguration crawlerConfiguration = objectMapper.readValue(reader, CrawlerConfiguration.Builder.class).build();
       return crawlerConfiguration;
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
       throw new RuntimeException(e);
     }
-
-    return new CrawlerConfiguration.Builder().build();
   }
 }
