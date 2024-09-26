@@ -40,14 +40,25 @@ public final class WebCrawlerMain {
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
     // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
     try (Writer writer = new OutputStreamWriter(System.out)) {
-      String path = config.getResultPath();
-      if (path.isEmpty()) {
+      String resultPath = config.getResultPath();
+      if (resultPath.isEmpty()) {
         resultWriter.write(writer);
       } else {
-        resultWriter.write(Paths.get(path));
+        resultWriter.write(Paths.get(resultPath));
+      }
+
+      // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+      if (!config.getProfileOutputPath().isEmpty()) {
+        Path profileOutputPath = Path.of(config.getProfileOutputPath());
+        try (BufferedWriter bWriter = Files.newBufferedWriter(profileOutputPath)) {
+          profiler.writeData(bWriter);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      } else {
+        profiler.writeData(writer);
       }
     }
-    // TODO: Write the profile data to a text file (or System.out if the file name is empty)
   }
 
   public static void main(String[] args) throws Exception {
