@@ -34,7 +34,6 @@ final class ProfilingMethodInterceptor implements InvocationHandler {
     Object methodTest;
     //Method must be annotated with @Profiled
     if (method.getAnnotation(Profiled.class) == null) {
-      start = clock.instant();
       //This should throw an exception
       try {
         methodTest = method.invoke(target, args);
@@ -42,10 +41,6 @@ final class ProfilingMethodInterceptor implements InvocationHandler {
         throw e.getTargetException();
       } catch(Throwable t) {
         throw new RuntimeException(t);
-      } finally {
-        //Record time anyways regardless of exception
-        Duration timeToExecute = Duration.between(start, clock.instant());
-        state.record(target.getClass(), method, timeToExecute);
       }
     } else {
       start = clock.instant();
