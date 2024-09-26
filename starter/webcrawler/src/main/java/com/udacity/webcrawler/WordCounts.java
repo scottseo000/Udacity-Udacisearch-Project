@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * Utility class that sorts the map of word counts.
@@ -29,7 +30,7 @@ final class WordCounts {
 
     // TODO: Reimplement this method using only the Stream API and lambdas and/or method references.
 
-    PriorityQueue<Map.Entry<String, Integer>> sortedCounts =
+    /*PriorityQueue<Map.Entry<String, Integer>> sortedCounts =
         new PriorityQueue<>(wordCounts.size(), new WordCountComparator());
     sortedCounts.addAll(wordCounts.entrySet());
     Map<String, Integer> topCounts = new LinkedHashMap<>();
@@ -37,7 +38,18 @@ final class WordCounts {
       Map.Entry<String, Integer> entry = sortedCounts.poll();
       topCounts.put(entry.getKey(), entry.getValue());
     }
-    return topCounts;
+    return topCounts;*/
+
+    //Reimplementing with the use of streams and lambdas
+    return wordCounts
+            .entrySet()                                     //For each entry in wordCounts
+            .stream()
+            .sorted(new WordCountComparator())              //Sort using WordCountComparator()'s logic
+            .limit(popularWordCount)                        //Limit the size to popularWordCount
+            .collect(Collectors.toMap(                      //Convert it back to a map
+               Map.Entry::getKey, Map.Entry::getValue,      //Populate map to be returned with values
+               (oldValue, newValue) -> oldValue, LinkedHashMap::new
+            ));
   }
 
   /**
